@@ -33,11 +33,13 @@ public class CodeGenerator {
     private static final String PACKAGE_PATH_SERVICE_IMPL = packageConvertPath(SERVICE_IMPL_PACKAGE);//生成的Service实现存放路径
     private static final String PACKAGE_PATH_CONTROLLER = packageConvertPath(CONTROLLER_PACKAGE);//生成的Controller存放路径
 
+    private static final String PACKAGE_PATH_API = packageConvertPath(API_PACKAGE);//生成的swagger存放路径
+
     private static final String AUTHOR = "CodeGenerator";//@author
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());//@date
 
     public static void main(String[] args) {
-        genCode("sys_user","sys_role");
+        genCode("sys_notice");
         //genCodeByCustomModelName("输入表名","输入自定义Model名称");
     }
 
@@ -62,6 +64,7 @@ public class CodeGenerator {
         genModelAndMapper(tableName, modelName);
         genService(tableName, modelName);
         genController(tableName, modelName);
+        genApi(tableName, modelName);
     }
 
 
@@ -186,6 +189,34 @@ public class CodeGenerator {
             System.out.println(modelNameUpperCamel + "Controller.java 生成成功");
         } catch (Exception e) {
             throw new RuntimeException("生成Controller失败", e);
+        }
+
+    }
+
+    public static void genApi(String tableName, String modelName) {
+        try {
+            freemarker.template.Configuration cfg = getConfiguration();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("date", DATE);
+            data.put("author", AUTHOR);
+            String modelNameUpperCamel = StringUtils.isEmpty(modelName) ? tableNameConvertUpperCamel(tableName) : modelName;
+            data.put("baseRequestMapping", modelNameConvertMappingPath(modelNameUpperCamel));
+            data.put("modelNameUpperCamel", modelNameUpperCamel);
+            data.put("modelNameLowerCamel", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, modelNameUpperCamel));
+            data.put("basePackage", BASE_PACKAGE);
+
+            data.put("modelNameUpper",modelNameUpperCamel.toUpperCase());
+
+            File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_API + modelNameUpperCamel + "Api.java");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            cfg.getTemplate("api.ftl").process(data, new FileWriter(file));
+
+            System.out.println(modelNameUpperCamel + "Api.java 生成成功");
+        } catch (Exception e) {
+            throw new RuntimeException("生成Api失败", e);
         }
 
     }

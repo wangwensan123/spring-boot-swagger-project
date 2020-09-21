@@ -12,5 +12,7 @@ public final class ProjectConstant {
     public static final String SERVICE_IMPL_PACKAGE = SERVICE_PACKAGE + ".impl";//生成的ServiceImpl所在包
     public static final String CONTROLLER_PACKAGE = BASE_PACKAGE + ".web";//生成的Controller所在包
 
+    public static final String API_PACKAGE = BASE_PACKAGE + ".web.api";//生成的swaggerApi所在包
+
     public static final String MAPPER_INTERFACE_REFERENCE = BASE_PACKAGE + ".core.Mapper";//Mapper插件基础接口的完全限定名
 }
