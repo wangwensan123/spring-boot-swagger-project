@@ -8,4 +8,5 @@ import com.company.project.core.Service;
  */
 public interface SysRoleService extends Service<SysRole> {
 
+
 }
